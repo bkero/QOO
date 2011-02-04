@@ -3,6 +3,8 @@ from twisted.internet import reactor
 from twisted.web.server import Site
 from twisted.web.resource import Resource
 
+import objects
+
 class VerbCallResource(Resource):
     isLeaf = True
     def __init__(self, obj, verb):
@@ -37,14 +39,29 @@ class ObjectResource(Resource):
     def getChild(self, name, request):
         return VerbResource(self.obj)
 
+class ObjectParent(Resource):
+    def getChild(self, name, request):
+        return ObjectResource(name)
+
+class AdminResource(Resource):
+    def __init__(self, call):
+        Resource.__init__(self)
+        self.call = call
+
+    def render_GET(self, request):
+        return "<html><body>{0}</body></html>".format(self.call)
+
+class AdminParent(Resource):
+    def getChild(self, name, request):
+        return AdminResource(name)
+
 class QooRoot(Resource):
     def render_GET(self, request):
         return "<html><body>Qoo server.</body></html>"
 
-    def getChild(self, name, request):
-        return ObjectResource(name)
-
 root = QooRoot()
+root.putChild("obj", ObjectParent())
+root.putChild("admin", AdminParent())
 factory = Site(root)
 reactor.listenTCP(8880, factory)
 reactor.run()
