@@ -1,5 +1,5 @@
 import beanstalk
-from twisted.internet import protocol
+from twisted.internet import reactor, protocol
 from twisted.python import log
 
 LOG = 1
@@ -12,7 +12,7 @@ def jobCall(bs, job_dict):
             lambda x: log.msg("Queued job: %s\n" % `x`))
 
 class JobServer(object):
-    def __init__(self, reactor):
+    def __init__(self):
         cc = protocol.ClientCreator(reactor,
                                     beanstalk.twisted_client.Beanstalk)
         self.deferred = cc.connectTCP("localhost", 11300)
