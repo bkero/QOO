@@ -15,7 +15,8 @@ class VerbCallResource(Resource):
         self.verb = verb
 
     def render_GET(self, request):
-        return "<html><body>VERB OUTPUT!</body></html>"
+        job_server.runVerb(self.obj, self.verb, request.args)
+        return "<html><body>Running {0}.{1}({2}).</body></html>".format(self.obj, self.verb, request.args)
 
 class VerbResource(Resource):
     def __init__(self, obj):

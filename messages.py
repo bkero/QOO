@@ -21,5 +21,8 @@ class JobServer(object):
     def add(self, job, **kwargs):
         self.deferred.addCallback(jobCall, {"job":job, "payload":kwargs})
 
-    def createObject(self, class, name):
-        self.add("create", type=class, name=name)
+    def createObject(self, class_name, name):
+        self.add("create", type=class_name, name=name)
+
+    def runVerb(self, obj_id, verb, **kwargs):
+        self.add("do", obj_id = obj_id, verb = verb, kwargs = kwargs)
