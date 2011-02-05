@@ -3,14 +3,12 @@ from twisted.internet import reactor, protocol, task
 from twisted.python import log
 import json
 
-import objects
-
 LOG = 1
 
-def executor(v, bs):
+def executor(jobdata, bs):
     bs.touch(jobdata['jid'])
     if LOG:
-        log.msg(v)
+        log.msg(jobdata)
     bs.delete(jobdata['jid'])
 
 def executionGenerator(bs):
