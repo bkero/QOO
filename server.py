@@ -6,6 +6,7 @@ from twisted.web.server import Site
 from twisted.web.resource import Resource
 
 from messages import JobServer
+from objects import Listener
 
 class VerbCallResource(Resource):
     isLeaf = True
@@ -67,6 +68,7 @@ class QooRoot(Resource):
 if __name__ == "__main__":
     log.startLogging(sys.stderr)
     job_server = JobServer()
+    listener = Listener()
     root = QooRoot()
     root.putChild("obj", ObjectParent())
     root.putChild("admin", AdminParent())
