@@ -5,8 +5,8 @@ import json
 
 LOG = 1
 
-def jobCall(bs, job_dict):
-    bs.use("qoo")
+def jobCall(bs, channel, job_dict):
+    bs.use(channel)
     d = bs.put(json.dumps(job_dict))
     if LOG > 0:
         d.addCallback(
@@ -18,14 +18,14 @@ class JobServer(object):
                                     beanstalk.twisted_client.Beanstalk)
         self.deferred = cc.connectTCP("localhost", 11300)
 
-    def add(self, job, **kwargs):
-        self.deferred.addCallback(jobCall, {"job":job, "payload":kwargs})
+    def add(self, job, channel = "system", **kwargs):
+        self.deferred.addCallback(jobCall, channel, {"job":job, "payload":kwargs})
 
     def createObject(self, class_name, name):
         self.add("create", type=class_name, name=name)
 
     def runVerb(self, obj_id, verb, **kwargs):
-        self.add("do", obj_id = obj_id, verb = verb, kwargs = kwargs)
+        self.add("do", channel = obj_id, verb = verb, kwargs = kwargs)
 
     def setProperty(self, obj_id, prop, value):
-        self.add("set", obj_id = obj_id, prop = prop, value = value)
+        self.add("set", channel = obj_id, prop = prop, value = value)
