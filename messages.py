@@ -17,5 +17,5 @@ class JobServer(object):
                                     beanstalk.twisted_client.Beanstalk)
         self.deferred = cc.connectTCP("localhost", 11300)
 
-    def add(job, **kwargs):
-        d.addCallback(jobCall, {"job":job, "payload":kwargs})
+    def add(self, job, **kwargs):
+        self.deferred.addCallback(jobCall, {"job":job, "payload":kwargs})
