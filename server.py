@@ -52,7 +52,7 @@ class AdminResource(Resource):
 
     def render_GET(self, request):
         if self.call == "install":
-            messages.job()
+            job_server.add("create", type="object", id=0, name="root")
         return "<html><body>{0}: success</body></html>".format(self.call)
 
 class AdminParent(Resource):
