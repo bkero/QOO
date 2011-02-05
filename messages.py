@@ -5,26 +5,32 @@ import json
 
 LOG = 1
 
-def executor(jobdata, bs):
+def start(jobdata, bs):
     bs.touch(jobdata['jid'])
     if LOG:
         log.msg(jobdata)
-    bs.delete(jobdata['jid'])
+    return jobdata
 
-def executionGenerator(bs):
+def stop(jid, bs):
+    bs.delete(jid)
+
+def executionGenerator(bs, executor):
     while True:
         if LOG:
             log.msg("Waiting for job...")
         job = bs.reserve()
-        job.addCallback(executor, bs)
+        job.addCallback(start, bs)
+        if executor:
+            job.addCallback(executor)
+        job.addCallback(stop, bs)
         yield job
 
-def jobListen(bs, channel):
+def jobListen(bs, channel, executor):
     bs.watch(channel)
     bs.ignore("default")
     
     coop = task.Cooperator()
-    coop.coiterate(executionGenerator(bs))
+    coop.coiterate(executionGenerator(bs, executor))
 
 def jobCall(bs, channel, job_dict):
     bs.use(channel)
@@ -42,8 +48,8 @@ class JobServer(object):
     def add(self, job, channel = "system", **kwargs):
         self.deferred.addCallback(jobCall, channel, {"job":job, "payload":kwargs})
 
-    def listen(self, channel = "system"):
-        self.deferred.addCallback(jobListen, channel)
+    def listen(self, channel = "system", executor=None):
+        self.deferred.addCallback(jobListen, channel, executor)
 
     def createObject(self, class_name, name):
         self.add("create", type=class_name, name=name)
