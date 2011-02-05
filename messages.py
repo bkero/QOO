@@ -50,6 +50,9 @@ class JobServer(object):
     def createObject(self, class_name, name):
         self.add("create", type=class_name, name=name)
 
+    def programVerb(self, obj_id, verb, code):
+        self.add("program", channel = obj_id, verb = verb, code = code)
+
     def runVerb(self, obj_id, verb, **kwargs):
         self.add("do", channel = obj_id, verb = verb, kwargs = kwargs)
 
