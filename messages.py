@@ -1,5 +1,8 @@
 import beanstalk
 from twisted.internet import protocol
+from twisted.python import log
+
+LOG = 1
 
 def jobCall(bs, job_dict):
     bs.use("qoo")
@@ -8,11 +11,11 @@ def jobCall(bs, job_dict):
         d.addCallback(
             lambda x: log.msg("Queued job: %s\n" % `x`))
 
-def job(d, job, **kwargs):
-    d.addCallback(jobCall, {"job":job, "payload":kwargs})
+class JobServer(object):
+    def __init__(self, reactor):
+        cc = protocol.ClientCreator(reactor,
+                                    beanstalk.twisted_client.Beanstalk)
+        self.deferred = cc.connectTCP("localhost", 11300)
 
-def connect(reactor):
-    cc = protocol.ClientCreator(reactor,
-                                beanstalk.twisted_client.Beanstalk)
-    d = cc.connectTCP("localhost", 11300)
-    return d
+    def add(job, **kwargs):
+        d.addCallback(jobCall, {"job":job, "payload":kwargs})

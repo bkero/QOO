@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import sys
 from twisted.internet import reactor
+from twisted.python import log
 from twisted.web.server import Site
 from twisted.web.resource import Resource
 
@@ -49,7 +51,9 @@ class AdminResource(Resource):
         self.call = call
 
     def render_GET(self, request):
-        return "<html><body>{0}</body></html>".format(self.call)
+        if self.call == "install":
+            messages.job()
+        return "<html><body>{0}: success</body></html>".format(self.call)
 
 class AdminParent(Resource):
     def getChild(self, name, request):
@@ -59,9 +63,11 @@ class QooRoot(Resource):
     def render_GET(self, request):
         return "<html><body>Qoo server.</body></html>"
 
-root = QooRoot()
-root.putChild("obj", ObjectParent())
-root.putChild("admin", AdminParent())
-factory = Site(root)
-reactor.listenTCP(8880, factory)
-reactor.run()
+if __name__ == "__main__":
+    log.startLogging(sys.stderr)
+    root = QooRoot()
+    root.putChild("obj", ObjectParent())
+    root.putChild("admin", AdminParent())
+    factory = Site(root)
+    reactor.listenTCP(8880, factory)
+    reactor.run()
