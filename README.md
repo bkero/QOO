@@ -1,6 +1,6 @@
 A queued object oriented MUD server.
 
-# Depedencies:
+# Dependencies:
 
 * beanstalk
 * pybeanstalk (included)
