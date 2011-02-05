@@ -4,11 +4,11 @@ Depedencies:
 
   * beanstalk
   * pybeanstalk (included)
-  * redis
-  * redis-py
+  * mongodb
+  * pymongo
   * pyyaml
 
 On Ubuntu that's: 
 
-    sudo apt-get install beanstalkd redis-server python-redis python-yaml
+    sudo apt-get install beanstalkd mongodb python-pymongo python-yaml
 
