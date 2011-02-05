@@ -26,3 +26,6 @@ class JobServer(object):
 
     def runVerb(self, obj_id, verb, **kwargs):
         self.add("do", obj_id = obj_id, verb = verb, kwargs = kwargs)
+
+    def setProperty(self, obj_id, prop, value):
+        self.add("set", obj_id = obj_id, prop = prop, value = value)
