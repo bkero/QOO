@@ -7,10 +7,11 @@ A queued object oriented MUD server.
 * mongodb
 * pymongo
 * pyyaml
+* GitPython
 
 ## On Ubuntu that's: 
 
-    sudo apt-get install beanstalkd mongodb python-pymongo python-yaml
+    sudo apt-get install beanstalkd mongodb python-pymongo python-yaml python-git
 
 # Making something do something:
 
