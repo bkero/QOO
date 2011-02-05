@@ -11,10 +11,11 @@ class Listener(object):
         self.channel = channel
 
     def system(self, jobdata):
+        data = json.loads(jobdata["data"])
         # Do something with the job.
-        if jobdata["data"]["job"] == "create":
+        if data["job"] == "create":
             obj_id = redis.incr("system:object_id")
-            payload = jobdata["data"]["payload"]
+            payload = data["payload"]
             redis.set("object:{0}".format(obj_id), json.dumps(payload))
         # Return a jid on success or deferred fail on failure.
         return jobdata["jid"]
