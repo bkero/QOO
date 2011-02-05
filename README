@@ -1,0 +1,14 @@
+This is a thing.
+
+Depedencies:
+
+  * beanstalk
+  * pybeanstalk (included)
+  * redis
+  * redis-py
+  * pyyaml
+
+On Ubuntu that's: 
+
+    sudo apt-get install beanstalkd redis-server python-redis python-yaml
+
