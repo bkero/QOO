@@ -1,3 +1,6 @@
 [submodule "pybeanstalk"]
 	path = pybeanstalk
 	url = git@github.com:chizu/pybeanstalk.git
+[submodule "QOOCore"]
+	path = QOOCore
+	url = git@github.com:chizu/QOOCore.git
