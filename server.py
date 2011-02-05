@@ -54,7 +54,7 @@ class AdminResource(Resource):
     def render_GET(self, request):
         if self.call == "install":
             job_server.createObject("object", "root")
-        return "<html><body>{0}: success</body></html>".format(self.call)
+        return "<html><body>{0}: running</body></html>".format(self.call)
 
 class AdminParent(Resource):
     def getChild(self, name, request):
