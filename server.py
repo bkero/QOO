@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import sys
-from twisted.internet import reactor
+from twisted.internet import reactor, protocol
 from twisted.python import log
 from twisted.web.server import Site
 from twisted.web.resource import Resource
+from twisted.conch import telnet
 
 from messages import JobServer
 from objects import Listener
@@ -65,6 +66,20 @@ class QooRoot(Resource):
     def render_GET(self, request):
         return "<html><body>Qoo server.</body></html>"
 
+class TelnetProtocol(telnet.TelnetProtocol):
+    def connectionMade(self):
+        self.transport.write("Welcome to QOO!\n")
+        self.transport.write("root@localhost:~# ")
+
+    def dataReceived(self, command):
+        print "Incoming command: ", command
+        self.transport.write("Received command: " + command)
+        self.transport.write("root@localhost:~# ")
+
+class TelnetFactory(protocol.ClientFactory):
+    def buildProtocol(self, addr):
+        return telnet.TelnetTransport(TelnetProtocol)
+
 if __name__ == "__main__":
     log.startLogging(sys.stderr)
     job_server = JobServer()
@@ -73,5 +88,7 @@ if __name__ == "__main__":
     root.putChild("obj", ObjectParent())
     root.putChild("admin", AdminParent())
     factory = Site(root)
+    telnetFactory = TelnetFactory()
     reactor.listenTCP(8880, factory)
+    reactor.listenTCP(8881, telnetFactory)
     reactor.run()
